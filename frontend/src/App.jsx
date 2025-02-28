@@ -9,30 +9,31 @@ function App() {
     const [secondNumber, setSecondNumber] = useState(0)
     const [sum, setSum] = useState(0)
 
-    const fetchAddResults = (num1, num2) => {
-        console.log("getting your result...")
-        axios.get(`/api/calculator/add?firstValue=${num1}&secondValue=${num2}`)
-            .then(result => setSum(result.data + 2))
-    }
+    const fetchAddResults = async (num1, num2) => {
+        console.log("Sending request to the backend...");
+        const apiUrl = `/api/calculator/add?firstValue=${num1}&secondValue=${num2}`;
+
+        axios.get(apiUrl, { responseType: 'json'})
+            .then(response => {
+                //console.log(response);
+                setSum(response.data)
+            })
+            .catch(error => {
+                console.error("There was an error fetching the result:", error);
+            });
+    };
+
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
       <h1>Combined Effort Calculator</h1>
         <p>(Using backend developed calculator API - with competing requirements)</p>
         <div className="card">
-            <input type="number" value={firstNumber} onChange={e => setFirstNumber(Number(e.target.value))} />
-            <span> + </span>
-            <input type="number" value={secondNumber} onChange={e => setSecondNumber(Number(e.target.value))} />
+            <input className="larger-input" size="6" type="number" value={firstNumber} onChange={e => setFirstNumber(Number(e.target.value))} />
+            <span className="larger"> + </span>
+            <input className="larger-input" type="number" value={secondNumber} onChange={e => setSecondNumber(Number(e.target.value))} />
         </div>
-        <div className="card">
-            <label>My best educated guess is {sum}</label>
+        <div className="card larger">
+            <label>My best guess is {sum}</label>
         </div>
         <div className="card">
            <button onClick={() => fetchAddResults(firstNumber, secondNumber)}>
